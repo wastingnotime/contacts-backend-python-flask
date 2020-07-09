@@ -144,3 +144,6 @@ dmypy.json
 
 # Editor-based Rest Client
 .idea/httpRequests
+
+# database
+contacts.db

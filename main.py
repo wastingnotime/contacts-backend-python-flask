@@ -1,37 +1,57 @@
+import os
 import uuid
 
 from dotenv import load_dotenv
 from flask import Flask, request
 from flask import jsonify
+from pony.orm import *
 
 # configuration --------------
 load_dotenv()
+
+# DB_LOCATION=contacts.db
 # FLASK_ENV=development
+db_location = os.getenv("DB_LOCATION")
+environment = os.getenv("FLASK_ENV")
+
+# database --------------
+if environment != 'production':
+    set_sql_debug(True)
+
+db = Database()
 
 
-_contacts = [
-    {'Id': str(uuid.uuid4()), 'FirstName': "Albert", 'LastName': "Einstein", 'PhoneNumber': "2222-1111"},
-    {'Id': str(uuid.uuid4()), 'FirstName': "Mary", 'LastName': "Curie", 'PhoneNumber': "1111-1111"}
-]
+class Contact(db.Entity):
+    id = PrimaryKey(str)
+    firstName = Required(str)
+    lastName = Required(str)
+    phoneNumber = Required(str)
 
+
+db.bind(provider='sqlite', filename=db_location, create_db=True)
+db.generate_mapping(create_tables=True)
+
+# api --------------
 app = Flask(__name__)
 
 
 @app.route('/contacts', methods=['POST'])
+@db_session
 def create_contact():
     """Creates a contact"""
     try:
         try:
-            contact = request.get_json()
+            contact_payload = request.get_json()
         except:
             raise ValueError
-        if contact is None:
+        if contact_payload is None:
             raise ValueError
 
         id = str(uuid.uuid4())
-        contact['Id'] = id
 
-        _contacts.append(contact)
+        Contact(id=id, firstName=contact_payload['firstName'], lastName=contact_payload['lastName'],
+                phoneNumber=contact_payload['phoneNumber'])
+
 
         response = app.response_class()
         response.status_code = 201
@@ -42,58 +62,69 @@ def create_contact():
 
 
 @app.route('/contacts', methods=['GET'])
+@db_session
 def get_all_contacts():
     """Gets all contacts"""
-    return jsonify(_contacts)
+    contacts_payload = []
+
+    contacts = select(c for c in Contact)
+    for c in contacts:
+        contacts_payload.append(c.to_dict())
+
+    return jsonify(contacts_payload)
 
 
 @app.route('/contacts/<id>', methods=['GET'])
+@db_session
 def get_contact(id):
     """Gets a specific contact"""
-    _, contact = find_contact(id)
-    if not contact:
+    try:
+        contact = Contact[id]
+    except ObjectNotFound:
         return '', 404
 
-    return jsonify(contact)
+    return jsonify(contact.to_dict())
 
 
 @app.route('/contacts/<id>', methods=['PUT'])
+@db_session
 def update_contact(id):
     """Updates a contact"""
-    i, _ = find_contact(id)
-    if i == -1:
+    try:
+        contact = Contact[id]
+    except ObjectNotFound:
         return '', 404
 
     try:
         try:
-            contact = request.json
+            contact_payload = request.json
         except:
             raise ValueError
-        if contact is None:
+        if contact_payload is None:
             raise ValueError
 
-        _contacts[i] = contact
+        contact.firstName = contact_payload['firstName']
+        contact.lastName = contact_payload['lastName']
+        contact.phoneNumber = contact_payload['phoneNumber']
+
         return '', 204
     except ValueError:
         return '', 400
 
 
 @app.route('/contacts/<id>', methods=['DELETE'])
+@db_session
 def delete_contact(id):
     """Deletes a contact"""
-    i, contact = find_contact(id)
-    if not contact:
+    try:
+        contact = Contact[id]
+    except ObjectNotFound:
         return '', 404
 
-    del _contacts[i]
+    contact.delete()
+
     return '', 204
 
-
-def find_contact(id):
-    for i in range(len(_contacts)):
-        if _contacts[i]['Id'] == id:
-            return i, _contacts[i]
-    return -1, None
 
 
 if __name__ == '__main__':

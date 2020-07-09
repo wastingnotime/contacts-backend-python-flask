@@ -17,3 +17,6 @@ __pycache__
 # misc
 .dockerignore
 README.md
+
+# database
+contacts.db
