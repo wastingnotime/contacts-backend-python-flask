@@ -1,7 +1,13 @@
 import uuid
 
+from dotenv import load_dotenv
 from flask import Flask, request
 from flask import jsonify
+
+# configuration --------------
+load_dotenv()
+# FLASK_ENV=development
+
 
 _contacts = [
     {'Id': str(uuid.uuid4()), 'FirstName': "Albert", 'LastName': "Einstein", 'PhoneNumber': "2222-1111"},
@@ -91,6 +97,5 @@ def find_contact(id):
 
 
 if __name__ == '__main__':
-    # todo: env
-    app.debug = True
+    app.debug = app.env != 'production'
     app.run(host='0.0.0.0', port=8010)

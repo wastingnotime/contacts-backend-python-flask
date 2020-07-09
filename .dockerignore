@@ -11,6 +11,9 @@ venv
 # caches
 __pycache__
 
+# dev config
+.env
+
 # misc
 .dockerignore
 README.md
