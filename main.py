@@ -17,7 +17,7 @@ _contacts = [
 app = Flask(__name__)
 
 
-@app.route('/', methods=['POST'])
+@app.route('/contacts', methods=['POST'])
 def create_contact():
     """Creates a contact"""
     try:
@@ -41,13 +41,13 @@ def create_contact():
         return '', 400
 
 
-@app.route('/', methods=['GET'])
+@app.route('/contacts', methods=['GET'])
 def get_all_contacts():
     """Gets all contacts"""
     return jsonify(_contacts)
 
 
-@app.route('/<id>', methods=['GET'])
+@app.route('/contacts/<id>', methods=['GET'])
 def get_contact(id):
     """Gets a specific contact"""
     _, contact = find_contact(id)
@@ -57,7 +57,7 @@ def get_contact(id):
     return jsonify(contact)
 
 
-@app.route('/<id>', methods=['PUT'])
+@app.route('/contacts/<id>', methods=['PUT'])
 def update_contact(id):
     """Updates a contact"""
     i, _ = find_contact(id)
@@ -78,7 +78,7 @@ def update_contact(id):
         return '', 400
 
 
-@app.route('/<id>', methods=['DELETE'])
+@app.route('/contacts/<id>', methods=['DELETE'])
 def delete_contact(id):
     """Deletes a contact"""
     i, contact = find_contact(id)
