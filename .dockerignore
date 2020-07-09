@@ -1,0 +1,16 @@
+# git
+.git
+.gitignore
+
+# idea
+.idea
+
+# py dev
+venv
+
+# caches
+__pycache__
+
+# misc
+.dockerignore
+README.md
