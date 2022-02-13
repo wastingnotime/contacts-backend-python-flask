@@ -8,9 +8,6 @@ from pony.orm import *
 
 # configuration --------------
 load_dotenv()
-
-# DB_LOCATION=contacts.db
-# FLASK_ENV=development
 db_location = os.getenv("DB_LOCATION")
 environment = os.getenv("FLASK_ENV")
 
@@ -51,7 +48,6 @@ def create_contact():
 
         Contact(id=id, firstName=contact_payload['firstName'], lastName=contact_payload['lastName'],
                 phoneNumber=contact_payload['phoneNumber'])
-
 
         response = app.response_class()
         response.status_code = 201
@@ -124,7 +120,6 @@ def delete_contact(id):
     contact.delete()
 
     return '', 204
-
 
 
 if __name__ == '__main__':
