@@ -9,10 +9,11 @@ from pony.orm import *
 # configuration --------------
 load_dotenv()
 db_location = os.getenv("DB_LOCATION")
-environment = os.getenv("FLASK_ENV")
+flask_debug = os.getenv("FLASK_DEBUG")
+
 
 # database --------------
-if environment != 'production':
+if flask_debug:
     set_sql_debug(True)
 
 db = Database()
@@ -123,5 +124,4 @@ def delete_contact(id):
 
 
 if __name__ == '__main__':
-    app.debug = app.env != 'production'
     app.run(host='0.0.0.0', port=8010)
