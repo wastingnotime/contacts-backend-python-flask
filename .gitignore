@@ -4,6 +4,7 @@ venv/
 
 # ide's
 .idea
+.vscode
 
 # database
 contacts.db

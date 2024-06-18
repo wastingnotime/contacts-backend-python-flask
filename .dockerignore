@@ -2,8 +2,9 @@
 .git
 .gitignore
 
-# idea
+# ide's
 .idea
+.vscode
 
 # py dev
 venv
