@@ -28,6 +28,11 @@ build a local docker image
 docker build --tag contacts-backend-python-flask .
 ```
 
+inspect local docker image (optional)
+```bash
+docker run -it --rm contacts-backend-python-flask /bin/ash
+```
+
 execute the local docker image
 ```
 docker run -p 8010:8010 contacts-backend-python-flask
@@ -76,3 +81,9 @@ curl --request GET \
   --url http://localhost:8010/contacts
 ```
 more examples and details about requests on (link) *to be defined
+
+
+
+# observations
+* no multi-stage docker building process due to the final image is small enough (about 54Mb). 
+
