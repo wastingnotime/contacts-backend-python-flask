@@ -1,23 +1,26 @@
-# git
-.git
-.gitignore
-
 # ide's
 .idea
 .vscode
 
-# py dev
-venv
+# docker
+dockerfile
+.dockerignore
 
-# caches
-__pycache__
+# git
+.git
+.gitignore
+.github
 
-# dev config
+# app config
 .env
 
+# py stuff
+venv
+__pycache__
+
 # misc
-.dockerignore
-README.md
+readme.md
+LICENSE
 
 # database
 contacts.db
